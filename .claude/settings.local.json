@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la *.xlsx 2>/dev/null || echo \"No xlsx files found\")",
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run:*)",
+      "Bash(grep -n \"questionnaire.id === 'structure'\" F:/01questionnaire/src/components/ScoringQuestionnaire.tsx)",
+      "Bash(grep -n \"questionnaire.id === 'reasoning'\" F:/01questionnaire/src/components/ScoringQuestionnaire.tsx)",
+      "Bash(cd F:/01questionnaire && node -e \"\nconst weights = [10,10,10,10,10,10,15,15,15,20,20,20,10,10,10,10,10,10,15,15,15,10,10,10];\nconst maxScore = 4;\nconst totalWeight = weights.reduce\\(\\(a,b\\) => a+b, 0\\);\nconst maxWeighted = weights.reduce\\(\\(sum, w\\) => sum + w * maxScore, 0\\);\nconsole.log\\('总权重:', totalWeight\\);\nconsole.log\\('理论最大加权分数:', maxWeighted\\);\nconsole.log\\('表层权重\\(A,B,E,H\\):', \\(10+10+10\\)+\\(10+10+10\\)+\\(10+10+10\\)+\\(10+10+10\\)\\);\nconsole.log\\('底层权重\\(C,D,F,G\\):', \\(15+15+15\\)+\\(20+20+20\\)+\\(10+10+10\\)+\\(15+15+15\\)\\);\n\")",
+      "Bash(cd F:/01questionnaire && rm src/components/Questionnaire.tsx src/components/History.tsx src/data.ts src/storage.ts src/types.ts)"
+    ]
+  }
+}
