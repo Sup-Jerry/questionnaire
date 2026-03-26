@@ -1,4 +1,4 @@
-export type QuestionnaireType = 'reasoning' | 'structure';
+export type QuestionnaireType = 'reasoning' | 'structure' | 'achievementOrientation';
 
 export interface QuestionOption {
   letter: string;
@@ -27,9 +27,11 @@ export interface QuestionnaireConfig {
   id: QuestionnaireType;
   name: string;
   type: 'scoring';
+  resultMode?: 'score' | 'orientation';
   options: QuestionOption[];
   questions: ReasoningQuestion[] | StructureQuestion[];
   dimensionMaxScores?: Record<string, number>;
+  dimensionAverageDivisors?: Record<string, number>;
   stageInterpretations?: { range: string; label: string; description: string }[];
   warningMessage?: string;
   surfaceDimensions?: string[];

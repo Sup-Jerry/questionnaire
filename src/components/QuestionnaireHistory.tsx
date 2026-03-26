@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import type { QuestionnaireType } from '../questionnaireTypes';
-import { getQuestionnaireRecords, deleteQuestionnaireRecord, clearQuestionnaireRecords, exportQuestionnaireToCSV, exportSingleRecordToCSV } from '../questionnaireStorage';
-import { getQuestionnaire } from '../questionnaireRegistry';
+﻿import { useState } from 'react';
+import type { QuestionnaireRecord, QuestionnaireType } from '../questionnaireTypes';
+import {
+  getQuestionnaireRecords,
+  deleteQuestionnaireRecord,
+  clearQuestionnaireRecords,
+  exportQuestionnaireToCSV,
+  exportSingleRecordToCSV
+} from '../questionnaireStorage';
 
 interface Props {
   questionnaireId: QuestionnaireType;
 }
 
 export default function QuestionnaireHistory({ questionnaireId }: Props) {
-  const [records, setRecords] = useState(getQuestionnaireRecords(questionnaireId).sort((a, b) => b.timestamp - a.timestamp));
+  const [records, setRecords] = useState<QuestionnaireRecord[]>(() =>
+    getQuestionnaireRecords(questionnaireId).sort((a, b) => b.timestamp - a.timestamp)
+  );
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const questionnaire = getQuestionnaire(questionnaireId);
 
   const toggleExpand = (id: string) => {
     setExpanded(prev => {
@@ -28,31 +34,37 @@ export default function QuestionnaireHistory({ questionnaireId }: Props) {
     if (confirm('确定删除这条记录吗？')) {
       deleteQuestionnaireRecord(questionnaireId, id);
       setRecords(getQuestionnaireRecords(questionnaireId).sort((a, b) => b.timestamp - a.timestamp));
+      setExpanded(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
   };
 
   const handleClearAll = () => {
-    if (confirm('确定清空所有记录吗？此操作不可恢复！')) {
+    if (confirm('确定清空所有记录吗？此操作不可恢复。')) {
       clearQuestionnaireRecords(questionnaireId);
       setRecords([]);
+      setExpanded(new Set());
     }
   };
 
-  const handleExportSingle = (record: any) => {
-    exportSingleRecordToCSV(questionnaireId, questionnaire.name, record);
+  const handleExportSingle = (record: QuestionnaireRecord) => {
+    exportSingleRecordToCSV(questionnaireId, record);
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 20 }}>
-      <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="card-container">
+      <div className="toolbar">
         <h2>历史记录 ({records.length})</h2>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="row">
           {records.length > 0 && (
             <>
-              <button onClick={() => exportQuestionnaireToCSV(questionnaireId, records)} style={{ padding: '8px 16px', cursor: 'pointer' }}>
+              <button onClick={() => exportQuestionnaireToCSV(questionnaireId, records)} className="btn">
                 导出CSV
               </button>
-              <button onClick={handleClearAll} style={{ padding: '8px 16px', cursor: 'pointer', backgroundColor: '#dc2626', color: '#fff', border: 'none', borderRadius: 4 }}>
+              <button onClick={handleClearAll} className="btn btn-danger">
                 清空全部
               </button>
             </>
@@ -65,13 +77,13 @@ export default function QuestionnaireHistory({ questionnaireId }: Props) {
       ) : (
         <div>
           {records.map(record => (
-            <div key={record.id} style={{ border: '1px solid #ddd', padding: 15, marginBottom: 15, borderRadius: 4 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <div key={record.id} className="record-card">
+              <div className="record-card-header">
                 <div>
                   <strong>时间：</strong>{new Date(record.timestamp).toLocaleString('zh-CN')}
                   <span style={{ marginLeft: 20 }}><strong>总分：</strong>{record.totalScore}</span>
                 </div>
-                <div style={{ display: 'flex', gap: 10 }}>
+                <div className="row">
                   <button onClick={() => toggleExpand(record.id)} style={{ padding: '4px 12px', cursor: 'pointer', fontSize: 14 }}>
                     {expanded.has(record.id) ? '收起' : '展开'}
                   </button>
@@ -94,12 +106,12 @@ export default function QuestionnaireHistory({ questionnaireId }: Props) {
                     return (
                       <div key={answer.questionId} style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
                         <div>
-                          <strong>题{answer.questionId}：</strong>
+                          <strong>题 {answer.questionId}：</strong>
                           选项 <strong>{answer.selectedLetter}</strong> {answer.selectedLabel}
                           <span style={{ marginLeft: 10, color: '#999' }}>(分数: {answer.score})</span>
                           {answer.wasDowngraded && (
                             <span style={{ marginLeft: 10, color: '#ef4444', fontSize: 13 }}>
-                              ⚠️ 已降级(原{answer.originalScore}分，因缺少证据/备注)
+                              ⚠️ 已降级（原 {answer.originalScore} 分，因缺少证据/备注）
                             </span>
                           )}
                         </div>

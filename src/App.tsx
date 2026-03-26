@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import ScoringQuestionnaire from './components/ScoringQuestionnaire';
 import QuestionnaireHistory from './components/QuestionnaireHistory';
 import { getAllQuestionnaires, getQuestionnaire } from './questionnaireRegistry';
@@ -12,12 +12,12 @@ export default function App() {
   const currentQuestionnaire = getQuestionnaire(selectedQuestionnaire);
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-      <header style={{ backgroundColor: '#fff', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <div className="app-shell">
+      <header className="app-header">
         <h1 style={{ margin: 0, textAlign: 'center' }}>问卷打分系统</h1>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 15, marginTop: 15, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="center-row">
+          <div className="row row-middle">
             <label><strong>选择问卷：</strong></label>
             <select
               value={selectedQuestionnaire}
@@ -31,46 +31,33 @@ export default function App() {
           </div>
         </div>
 
-        <nav style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 15 }}>
+        <nav className="center-row">
           <button
             onClick={() => setPage('questionnaire')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              backgroundColor: page === 'questionnaire' ? '#007bff' : '#fff',
-              color: page === 'questionnaire' ? '#fff' : '#000',
-              border: '1px solid #007bff',
-              borderRadius: 4
-            }}
+            className={`btn btn-primary ${page === 'questionnaire' ? 'is-active' : ''}`}
           >
             填写问卷
           </button>
           <button
             onClick={() => setPage('history')}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              backgroundColor: page === 'history' ? '#007bff' : '#fff',
-              color: page === 'history' ? '#fff' : '#000',
-              border: '1px solid #007bff',
-              borderRadius: 4
-            }}
+            className={`btn btn-primary ${page === 'history' ? 'is-active' : ''}`}
           >
             历史记录
           </button>
         </nav>
       </header>
 
-      <main style={{ padding: '20px 0' }}>
+      <main className="content-wrap">
         {page === 'questionnaire' ? (
           <ScoringQuestionnaire
             questionnaire={currentQuestionnaire}
             onSubmit={() => setPage('history')}
           />
         ) : (
-          <QuestionnaireHistory questionnaireId={selectedQuestionnaire} />
+          <QuestionnaireHistory key={selectedQuestionnaire} questionnaireId={selectedQuestionnaire} />
         )}
       </main>
     </div>
   );
 }
+
