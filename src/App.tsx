@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import ScoringQuestionnaire from './components/ScoringQuestionnaire';
+import ScoringQuestionnaireAntd from './components/ScoringQuestionnaireAntd';
 import QuestionnaireHistory from './components/QuestionnaireHistory';
 import { getAllQuestionnaires, getQuestionnaire } from './questionnaireRegistry';
 import type { QuestionnaireType } from './questionnaireTypes';
@@ -49,7 +49,7 @@ export default function App() {
 
       <main className="content-wrap">
         {page === 'questionnaire' ? (
-          <ScoringQuestionnaire
+          <ScoringQuestionnaireAntd
             questionnaire={currentQuestionnaire}
             onSubmit={() => setPage('history')}
           />
